@@ -37,7 +37,6 @@ export class ProductsController {
   delete(@Param('id') id: number) {
     this.productService.delete(id);
   }
-
 //   @Get()
 //   getAllProducts():Product[]{
 //     return this.productService.getAll();

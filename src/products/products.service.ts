@@ -42,9 +42,7 @@ export class ProductsService {
             description: body.description,
           }
         ];
-
       }
-      
       update(id: number, body: any) {
         let product: Product = {
           id,
