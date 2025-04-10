@@ -4,6 +4,12 @@ import { Custumers } from './interfaces/custumers/custumers.interface';
 @Injectable()
 export class CustumersService {
     private custumers : Custumers [] =[
+
+            { id:0,
+            name:"Miguel",
+            age:31,
+            birth:new Date('1984-05-03')}
+    
     ];
     getAll(){
             return this.custumers;

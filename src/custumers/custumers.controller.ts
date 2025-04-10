@@ -5,13 +5,19 @@ import { Custumers } from './interfaces/custumers/custumers.interface';
 @Controller('custumers')
 export class CustumersController {
     constructor(private readonly custumerService: CustumersService){}
-    
+
     // @Get('query')
     //     rutaQuery(@Query() query) {
     //     return `El dato query, x ha resivido el valor ${query.x} y el valor de y es ${query.y} `;
     // }
+
+    @Get('ruta-error-404')
+        @HttpCode(HttpStatus.NOT_FOUND)
+        rutaConError404(){
+        return 'esto es un error 404!! no existe';
+    }
     @Get()
-      getAllCustumCustumers():Custumers[] {
+      getAllCustumers():Custumers[] {
         return this.custumerService.getAll();
       }
     
