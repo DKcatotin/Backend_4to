@@ -16,8 +16,8 @@ export class CustumersService {
     return this.custumers;
   }
 
-  getId(id: number): Custumers {
-    const customer = this.custumers.find((item: Custumers) => item.id === id);
+  getId(id: number){
+    const customer = this.custumers.find(custumers => custumers.id === id);
     if (!customer) {
       throw new NotFoundException(`Cliente con id ${id} no encontrado.`);
     }
@@ -67,7 +67,20 @@ export class CustumersService {
 
     return updatedCustomer;
   }
+  partialUpdate(id: number, body: Partial<Custumers>) {
+    const customerIndex = this.custumers.findIndex((item) => item.id === id);
+    if (customerIndex === -1) {
+        throw new NotFoundException(`No se puede actualizar. Cliente con id ${id} no existe.`);
+    }
 
+    this.custumers[customerIndex] = {
+        ...this.custumers[customerIndex],
+        ...body,
+        birth: body.birth ? new Date(body.birth) : this.custumers[customerIndex].birth
+    };
+
+    return this.custumers[customerIndex];
+}
   delete(id: number) {
     const exists = this.custumers.some((item) => item.id === id);
     if (!exists) {

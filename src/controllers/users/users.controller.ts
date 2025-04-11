@@ -6,14 +6,16 @@ export class UsersController {
          rutaQuery(@Query() query) {
         return `El dato query, x ha resivido el valor ${query.x} y el valor de y es ${query.y} `;
         }
-    //query?x=24&y=xxx
+    //http://localhost:3000/users/query?x=24&y=65
     @Get('cars')
         carsQuery(@Query('count', ParseIntPipe) carCount: number) {
         return carCount;
+        //http://localhost:3000/users/cars?count=78.7
     }
     @Get('cars')
         carsQ(@Query('count') carCount: number) {
         return carCount;
+        //http://localhost:3000/users/cars?count=24
     } 
     @Get() 
         getALL(){
