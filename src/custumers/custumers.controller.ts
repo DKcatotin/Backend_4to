@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Put, Query } from '@nestjs/common';
 import { CustumersService } from './custumers.service';
 import { Custumers } from './interfaces/custumers/custumers.interface';
 
@@ -10,7 +10,7 @@ export class CustumersController {
         @HttpCode(HttpStatus.NOT_FOUND)
         rutaConError404(){
         return 'esto es un error 404!! no existe';
-        //{http://localhost:3000/custumers/ruta-error
+        //http://localhost:3000/custumers/ruta-error
     }
     @Get()
       getAllCustumers():Custumers[] {
@@ -18,8 +18,8 @@ export class CustumersController {
       }
     
       @Get(':id')
-      find(@Param('id') id: number) {
-        return this.custumerService.getId(id);
+      findOne(@Param('id') id) {
+        return this.custumerService.getId(+id);
       }
     
       @Post()
@@ -34,13 +34,17 @@ export class CustumersController {
         @Param('id') id: number, 
         @Body() body,
       ) {
-        return this.custumerService.update(id, body);
+        return this.custumerService.update(+id, body);
       }
+      @Patch(':id')
+    partialUpdate(@Param('id') id: number, @Body() body) {
+        return this.custumerService.partialUpdate(+id, body);
+    }
     
       @Delete(':id')
       @HttpCode(HttpStatus.NO_CONTENT)
       delete(@Param('id') id: number) {
-        this.custumerService.delete(id);
+        this.custumerService.delete(+id);
       }
     
 }

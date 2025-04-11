@@ -9,6 +9,7 @@ export class CaminoController {
     @Get(':id/:size')
     findWithSize(@Param('id') id: number, @Param('size') size: string ) {
     return `Página de detalle de producto ${id}, en tamaño ${size}`;
+    // http://localhost:3000/camino
 }
     //Decorador RES
     @Get(':id')
@@ -19,5 +20,6 @@ export class CaminoController {
      return response.status(HttpStatus.NOT_FOUND).send(`Producto con id ${id} not found`);
         }
     }
+    // http://localhost:3000/camino/108
     
 }
