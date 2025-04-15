@@ -7,9 +7,11 @@ import { UsersController } from './controllers/users/users.controller';
 import { ProductsService } from './products/products.service';
 import { CustumersService } from './custumers/custumers.service';
 import { CaminoController } from './camino/camino.controller';
+import { ProductsModule } from './products/products.module';
+import { TagsModule } from './tags/tags.module';
 
 @Module({
-  imports: [],
+  imports: [ProductsModule, TagsModule],
   controllers: [AppController, ProductsController, CustumersController, UsersController, CaminoController],
   providers: [AppService, ProductsService, CustumersService],
 })
