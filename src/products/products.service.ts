@@ -4,11 +4,7 @@ import { Product } from './interfaces/product/product.interface';
 @Injectable()
 export class ProductsService {
     private products : Product[] = [
-        {
-            id:0,
-            name: "marco de fotos pequeño",
-            description: "Marco ideal para fotos 15x15"
-        },{
+       {
             id:1,
             name: "marco de fotos mediano",
             description: "Marco ideal para fotos 25X25"
