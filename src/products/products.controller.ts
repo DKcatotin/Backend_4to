@@ -1,14 +1,17 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Put, Query, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Patch, Post, Put, Query, Res } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { response } from 'express';
 import { Product } from './interfaces/product/product.interface';
+import { TagPatchDto } from 'src/tags/dto/tag.dto/tag-patch.dto';
+import { ProductDto } from './dto/product.dto/product.dto';
+import { ProductPatchDto } from './dto/product.dto/product-patch.dto';
 
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productService:ProductsService){}
 
   @Get()
-  getAllProducts(): Product[] {
+  getAllProducts(): ProductDto[] {
     return this.productService.getAll();
   }
 
@@ -36,6 +39,13 @@ export class ProductsController {
   @HttpCode(HttpStatus.NO_CONTENT)
   delete(@Param('id') id: number) {
     this.productService.delete(id);
+  }
+  @Patch(':id')
+  async patch(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: ProductPatchDto,
+  ) {
+    return this.productService.patch(+id, body);
   }
 //   @Get()
 //   getAllProducts():Product[]{

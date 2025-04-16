@@ -1,19 +1,19 @@
 import { Type } from "class-transformer";
-import {  IsDateString, IsInt, IsString, Matches, Max, Min } from "class-validator";
+import {   IsString, Matches, MaxLength,  } from "class-validator";
 export class TagDto {
-    id:number;
-
+    id:string
     @IsString()
+    @MaxLength(30)
     @Matches(/^[\p{L}\s]+$/u,{message:'el nombre solo debe contener letras y spacios '})
     name: string;
-    @Type(() => Number)
-    @IsInt({ message: 'La edad debe ser un número entero' })
-    @Min(0, { message: 'La edad no puede ser menor que 0' })
-    @Max(100, { message: 'La edad no puede ser mayor que 100' })
-    age: number;
+
+    @IsString()
+    @MaxLength(100)
+    description:string
     
-    @IsDateString({}, {
-        message: 'La fecha de nacimiento debe tener el formato AAAA-MM-DD',
-      })
-      birthday: Date;
+    @IsString()
+    @Matches(/^[\p{L}\s]+$/u,{message:'el nombre solo debe contener letras y spacios '})
+    slag:string
     }
+
+   

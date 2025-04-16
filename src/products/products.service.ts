@@ -1,32 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { Product } from './interfaces/product/product.interface';
+import { ProductPatchDto } from './dto/product.dto/product-patch.dto';
+import { ProductDto } from './dto/product.dto/product.dto';
 
 @Injectable()
 export class ProductsService {
-    private products : Product[] = [
-       {
-            id:1,
-            name: "marco de fotos mediano",
-            description: "Marco ideal para fotos 25X25"
-        },{ 
-            id:2,
-            name: "marco de fotos grande",
-            description: "Marco ideal para fotos 35x25"
-        },{
-            id:3,
-            name: "marco de fotos granades",
-            description: "Marco ideal para fotos 45x35"
-        },{
-            id:4,
-            name:"marco semi grande",
-            description:"muy largo"
-        }
-    ];
+    private products : ProductDto[] = []
     getAll(){
         return this.products;
     }
-    getId(id: number): Product {
-        return this.products.find( (item: Product) => item.id == id);
+    getId(id: number): ProductDto {
+        return this.products.find( (item: ProductDto) => item.id == id);
       }
     
       insert(body: any) {
@@ -35,26 +19,45 @@ export class ProductsService {
           {
             id: this.lastId() + 1,
             name: body.name,
-            description: body.description,
+            age: body.age,
+            birthday: body.birthday,
+            residence:body.residence
+
+
           }
         ];
       }
       update(id: number, body: any) {
-        let product: Product = {
+        let product: ProductDto = {
           id,
           name: body.name,
-          description: body.description,
+          age: body.age,
+          birthday: body.birthday,
+          residence:body.residence
         }
-        this.products = this.products.map( (item: Product) => {
+        this.products = this.products.map( (item: ProductDto) => {
           console.log(item, id, item.id == id);
           return item.id == id ? product : item;
         });
       }
     
       delete(id: number) {
-        this.products = this.products.filter( (item: Product) => item.id != id );
+        this.products = this.products.filter( (item: ProductDto) => item.id != id );
       }
       private lastId(): number {
         return this.products[this.products.length - 1].id;
       }
+      patch(id: number, body: ProductPatchDto) {
+          const previousTagDto = this.getId(id);
+          if (!previousTagDto) return;
+        
+          const updatedTag: ProductDto = {
+            ...previousTagDto,
+            ...body,
+          };
+        
+          this.products = this.products.map((item: ProductDto) => {
+            return item.id === id ? updatedTag : item;
+          });
+        }
 }

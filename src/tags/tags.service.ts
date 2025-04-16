@@ -1,28 +1,43 @@
 import { Injectable } from '@nestjs/common';
-
+import { v4 as uuidv4 } from 'uuid';
 import { TagDto } from './dto/tag.dto/tag.dto';
+import { TagPatchDto } from './dto/tag.dto/tag-patch.dto';
 
 @Injectable()
 export class TagsService {
   private tags: TagDto[] = [];
 
-  getId(id: number): TagDto {
-  return this.tags.find((item: TagDto) => item.id === id);
+ getId(id: string) {
+ const tag = this.tags.find(tag => tag.id === id.toString());
+ if (!tag) {
+  throw new Error('Tag not found');
+}
+}
+getAll() {return this.tags;
  }
- getAll() {
-  return this.tags;
+
+async insert(tagDto: TagDto): Promise<TagDto> {
+  const newTag: TagDto = {
+    id: uuidv4(), 
+    name: tagDto.name,
+    description: tagDto.description,
+    slag:tagDto.slag
+  };
+  this.tags.push(newTag);
+  return Promise.resolve(newTag); 
 }
- private lastId(): number {
-  return this.tags.length > 0 ? this.tags[this.tags.length - 1].id : 0;
-}
-  insert(tagDto: TagDto) {
-    // Aquí puedes convertir el DTO a tu modelo interno si lo necesitas
-    const newTag: TagDto= {
-      id: this.lastId() + 1,
-      name: tagDto.name,
-      age: tagDto.age,
-      birthday: tagDto.birthday,
-    };
-    this.tags.push(newTag);
   }
-}
+  // patch(id: number, body: TagPatchDto) {
+  //   const previousTagDto = this.getId(id);
+  //   if (!previousTagDto) return;
+  
+  //   const updatedTag: TagDto = {
+  //     ...previousTagDto,
+  //     ...body,
+  //   };
+  
+  //   this.tags = this.tags.map((item: TagDto) => {
+  //     return item.id === id ? updatedTag : item;
+  //   });
+  // }
+
