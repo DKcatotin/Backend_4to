@@ -26,7 +26,7 @@ export class TagsController {
 
   @Get(':id')
   getId(@Param('id') id:string){
-  return this.tagsService.getAll(id);
+  return this.tagsService.getId(id);
   }
 
   // @Post()

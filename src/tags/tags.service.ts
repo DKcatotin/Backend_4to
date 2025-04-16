@@ -7,11 +7,12 @@ import { TagPatchDto } from './dto/tag.dto/tag-patch.dto';
 export class TagsService {
   private tags: TagDto[] = [];
 
- getId(id: string) {
- const tag = this.tags.find(tag => tag.id === id.toString());
+ getId(id: string) :TagDto{
+ const tag = this.tags.find(tag => tag.id === id);
  if (!tag) {
   throw new Error('Tag not found');
 }
+return tag
 }
 getAll() {return this.tags;
  }
