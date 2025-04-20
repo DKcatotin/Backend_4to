@@ -13,7 +13,7 @@ export class TagDto {
     
     @IsString()
     @Matches(/^[\p{L}\s]+$/u,{message:'el nombre solo debe contener letras y spacios '})
-    slag:string
+    slug:string
     }
 
    

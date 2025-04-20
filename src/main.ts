@@ -7,7 +7,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({
     stopAtFirstError:true,
     whitelist:true,
-    errorHttpStatusCode:401
+    errorHttpStatusCode:400
   }));
 
   await app.listen(process.env.PORT ?? 3000);
