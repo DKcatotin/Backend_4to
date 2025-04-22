@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Patch, Post, Put, Query } from '@nestjs/common';
 
-@Controller('users')
+@Controller('user')
 export class UsersController {
     @Get('query')
          rutaQuery(@Query() query) {
