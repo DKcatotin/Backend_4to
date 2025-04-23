@@ -63,7 +63,6 @@ export class UsersService {
       throw new NotFoundException(`Usuario con ID: ${id} no encontrado`);
     }
   
-    // Reemplazamos todos los campos del usuario con los datos que llegan del DTO
     user.name = updateUserDto.name;
     user.last_name = updateUserDto.last_name;
     user.descriptions = updateUserDto.descriptions;

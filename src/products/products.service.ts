@@ -1,63 +1,63 @@
-import { Injectable } from '@nestjs/common';
-import { Product } from './interfaces/product/product.interface';
-import { ProductPatchDto } from './dto/product.dto/product-patch.dto';
-import { ProductDto } from './dto/product.dto/product.dto';
+// products.service.ts
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Product } from './entity/product.entity';
+import { Repository } from 'typeorm';
+import { User } from '../users/entities/user.entity'; // asegúrate que esté bien importado
 
 @Injectable()
 export class ProductsService {
-    private products : ProductDto[] = []
-    getAll(){
-        return this.products;
+  constructor(
+    @InjectRepository(Product)
+    private readonly productRepository: Repository<Product>,
+    
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>, // 👈 importante para la relación
+  ) {}
+
+  async getAll(): Promise<Product[]> {
+    return this.productRepository.find({ relations: ['user'] });
+  }
+
+  async getId(id: number): Promise<Product> {
+    const product = await this.productRepository.findOne({ where: { id }, relations: ['user'] });
+    if (!product) throw new NotFoundException('Producto no encontrado');
+    return product;
+  }
+
+  async insert(body: any): Promise<void> {
+    const user = await this.userRepository.findOne({ where: { id: body.userId } });
+    if (!user) {
+      throw new NotFoundException(`Usuario con ID ${body.userId} no encontrado`);
     }
-    getId(id: number): ProductDto {
-        return this.products.find( (item: ProductDto) => item.id == id);
-      }
-    
-      insert(body: any) {
-        this.products = [
-          ...this.products,
-          {
-            id: this.lastId() + 1,
-            name: body.name,
-            age: body.age,
-            birthday: body.birthday,
-            residence:body.residence
 
+    const product = this.productRepository.create({
+      name: body.name,
+      description: body.description,
+      precio: body.precio,
+      stock: body.stock,
+      category: body.category,
+      user,
+    });
 
-          }
-        ];
-      }
-      update(id: number, body: any) {
-        let product: ProductDto = {
-          id,
-          name: body.name,
-          age: body.age,
-          birthday: body.birthday,
-          residence:body.residence
-        }
-        this.products = this.products.map( (item: ProductDto) => {
-          console.log(item, id, item.id == id);
-          return item.id == id ? product : item;
-        });
-      }
-    
-      delete(id: number) {
-        this.products = this.products.filter( (item: ProductDto) => item.id != id );
-      }
-      private lastId(): number {
-        return this.products[this.products.length - 1].id;
-      }
-      patch(id: number, body: ProductPatchDto) {
-          const previousTagDto = this.getId(id);
-          if (!previousTagDto) return;
-        
-          const updatedTag: ProductDto = {
-            ...previousTagDto,
-            ...body,
-          };
-        
-          this.products = this.products.map((item: ProductDto) => {
-            return item.id === id ? updatedTag : item;
-          });
-        }
+    await this.productRepository.save(product);
+  }
+
+  async update(id: number, body: any): Promise<Product> {
+    const product = await this.productRepository.findOneBy({ id });
+    if (!product) throw new NotFoundException('Producto no encontrado');
+    Object.assign(product, body);
+    return this.productRepository.save(product);
+  }
+
+  async delete(id: number): Promise<void> {
+    await this.productRepository.delete(id);
+  }
+
+  async patch(id: number, body: any): Promise<void> {
+    const product = await this.productRepository.findOneBy({ id });
+    if (!product) throw new NotFoundException('Producto no encontrado');
+    Object.assign(product, body);
+    await this.productRepository.save(product);
+  }
 }
