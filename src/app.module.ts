@@ -20,7 +20,7 @@ import { Product } from './products/entity/product.entity';
     host: 'localhost',
     port: 5432,
     username: 'postgres',
-    password: '1234',
+    password: '12345',
     database: 'nestjs',
     entities:[User,Product],
     retryDelay:3000,

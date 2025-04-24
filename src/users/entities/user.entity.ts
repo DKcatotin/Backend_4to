@@ -21,8 +21,8 @@ export class User {
     @Column()
     birthday: Date;
 
-    @Column('int')
-    identificacion: number;
+    @Column('varchar', { length: 10 })
+    identificacion: string;
 
     @OneToMany(() => Product, product => product.user)
     products: Product[]; 

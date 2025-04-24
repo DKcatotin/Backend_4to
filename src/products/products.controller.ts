@@ -21,7 +21,7 @@ export class ProductsController {
   @Post()
   @HttpCode(HttpStatus.NO_CONTENT)
   createProduct(
-    @Body() body,
+    @Body() body:ProductDto,
   ) {
     this.productService.insert(body);
   }

@@ -1,9 +1,10 @@
 // products.service.ts
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from './entity/product.entity';
 import { Repository } from 'typeorm';
 import { User } from '../users/entities/user.entity'; // asegúrate que esté bien importado
+import { ProductPatchDto } from './dto/product.dto/product-patch.dto';
 
 @Injectable()
 export class ProductsService {
@@ -43,10 +44,18 @@ export class ProductsService {
     await this.productRepository.save(product);
   }
 
-  async update(id: number, body: any): Promise<Product> {
+  async update(id: number, productPatchDto: ProductPatchDto): Promise<Product> {
     const product = await this.productRepository.findOneBy({ id });
-    if (!product) throw new NotFoundException('Producto no encontrado');
-    Object.assign(product, body);
+
+    if (!product) {throw new NotFoundException('Producto no encontrado');}
+
+    const requiredFields=['name','description','precio','stock','category'];
+    const missingFields= requiredFields.filter(field=>productPatchDto[field]===undefined);
+    if(missingFields.length > 0){
+      console.warn('Faltan los siguientes campos:',missingFields);
+      throw new BadRequestException(`Faltan los sigueintes campos requeridos: ${missingFields.join(', ')}`)
+    }
+    Object.assign(product, productPatchDto);
     return this.productRepository.save(product);
   }
 

@@ -1,4 +1,4 @@
-import { IsNotEmpty } from "class-validator";
+import { IsNotEmpty, IsString, Matches } from "class-validator";
 
 export class CreateUserDto {
     @IsNotEmpty()
@@ -11,7 +11,8 @@ export class CreateUserDto {
     email: string;
     @IsNotEmpty()
     birthday: Date;
-    @IsNotEmpty()
-    identificacion: number;
+    @IsString()
+    @Matches(/^\d{10}$/, {message: 'La identificación debe tener exactamente 10 números.',})
+    identificacion: string; 
   }
   
