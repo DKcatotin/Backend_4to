@@ -7,4 +7,6 @@ export class CreateProduct{
     description:string
     @IsNotEmpty()
     precio:number
+
+    
 }

@@ -46,8 +46,6 @@ export class TagsService {
       throw new NotFoundException(`No existe ningún tag con id: ${id}`);
     }
 
-    
-
     const updatedTag: TagDto = {
       id,
       name: tagDto.name,

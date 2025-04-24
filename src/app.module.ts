@@ -13,6 +13,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { User } from './users/entities/user.entity';
 import { Product } from './products/entity/product.entity';
+import { SizeModule } from './size/size.module';
+import { Size } from './size/entities/size.entity';
 
 @Module({
   imports: [ProductsModule, TagsModule,TypeOrmModule.forRoot({
@@ -20,13 +22,13 @@ import { Product } from './products/entity/product.entity';
     host: 'localhost',
     port: 5432,
     username: 'postgres',
-    password: '12345',
+    password: '1234',
     database: 'nestjs',
-    entities:[User,Product],
+    entities:[User,Product,Size],
     retryDelay:3000,
     autoLoadEntities:true,
     synchronize: true,
-  }), UsersModule],
+  }), UsersModule, SizeModule],
   controllers: [AppController, ProductsController, CustumersController, UsersController, CaminoController],
   providers: [AppService, CustumersService],
 })
