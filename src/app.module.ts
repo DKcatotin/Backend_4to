@@ -22,7 +22,7 @@ import { Size } from './size/entities/size.entity';
     host: 'localhost',
     port: 5432,
     username: 'postgres',
-    password: '1234',
+    password: '12345',
     database: 'nestjs',
     entities:[User,Product,Size],
     retryDelay:3000,

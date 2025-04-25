@@ -39,12 +39,11 @@ export class ProductsService {
     const user = await this.userRepository.findOne({ where: { id: body.userId } });
     if (!user) throw new NotFoundException(`Usuario con ID ${body.userId} no encontrado`);
 
-    let sizes = [];
-    if (Array.isArray(body.sizes)) {
-      sizes = await this.sizeRepository.findByIds(body.sizes);
-    } else if (body.sizes) {
-      throw new BadRequestException('sizes debe ser un array de IDs');
+    if (!Array.isArray(body.sizes)) {
+      throw new BadRequestException('sizes debe ser un array de IDs o nombres válidos');
     }
+
+    const sizes = await this.resolveSizes(body.sizes);
 
     const product = this.productRepository.create({
       name: body.name,
@@ -55,36 +54,68 @@ export class ProductsService {
       user,
       sizes,
     });
-    console.log(product)
 
     await this.productRepository.save(product);
+  }
+
+  private async resolveSizes(providedSizes: (string | number)[]): Promise<Size[]> {
+    const allEquivalents: Record<string, string[]> = {
+      S: ['S', '36', 'M'],
+      M: ['M', '38', 'G'],
+      L: ['L', '40', 'EG'],
+      XL: ['XL', '42', 'EEG'],
+    };
+
+    const uniqueSizes = new Set<string>();
+
+    for (const input of providedSizes) {
+      const inputStr = input.toString();
+      let equivalents = allEquivalents[inputStr];
+      if (!equivalents) {
+        const foundKey = Object.keys(allEquivalents).find(key =>
+          allEquivalents[key].includes(inputStr),
+        );
+        equivalents = foundKey ? allEquivalents[foundKey] : [inputStr];
+      }
+      for (const eq of equivalents) {
+        uniqueSizes.add(eq);
+      }
+    }
+
+    const finalSizes: Size[] = [];
+    for (const sizeStr of uniqueSizes) {
+      let size = await this.sizeRepository.findOne({ where: { size: sizeStr } });
+      if (!size) {
+        size = this.sizeRepository.create({ size: sizeStr });
+        await this.sizeRepository.save(size);
+      }
+      finalSizes.push(size);
+    }
+    return finalSizes;
   }
 
   async update(id: number, productDto: ProductDto): Promise<Product> {
     const product = await this.productRepository.findOne({
       where: { id },
-      relations: ['sizes'], 
+      relations: ['sizes'],
     });
-  
+
     if (!product) throw new NotFoundException('Producto no encontrado');
-  
-    
+
     if (productDto.sizes) {
       if (!Array.isArray(productDto.sizes)) {
-        throw new BadRequestException('sizes debe ser un array de IDs');
+        throw new BadRequestException('sizes debe ser un array de IDs o nombres');
       }
-  
-      const sizes = await this.sizeRepository.findByIds(productDto.sizes);
+      const sizes = await this.resolveSizes(productDto.sizes);
       product.sizes = sizes;
     }
-  
-    
+
     product.name = productDto.name;
     product.description = productDto.description;
     product.precio = productDto.precio;
     product.stock = productDto.stock;
     product.category = productDto.category;
-  
+
     return this.productRepository.save(product);
   }
 
@@ -95,28 +126,25 @@ export class ProductsService {
   async patch(id: number, body: any): Promise<Product> {
     const product = await this.productRepository.findOne({
       where: { id },
-      relations: ['sizes'], 
+      relations: ['sizes'],
     });
-  
+
     if (!product) throw new NotFoundException('Producto no encontrado');
-  
-   
+
     if (body.sizes) {
       if (!Array.isArray(body.sizes)) {
-        throw new BadRequestException('sizes debe ser un array de IDs');
+        throw new BadRequestException('sizes debe ser un array de IDs o nombres');
       }
-  
-      const sizes = await this.sizeRepository.findByIds(body.sizes);
+      const sizes = await this.resolveSizes(body.sizes);
       product.sizes = sizes;
     }
-  
-    
+
     if (body.name) product.name = body.name;
     if (body.description) product.description = body.description;
     if (body.precio) product.precio = body.precio;
     if (body.stock) product.stock = body.stock;
     if (body.category) product.category = body.category;
-  
+
     return this.productRepository.save(product);
   }
 }
