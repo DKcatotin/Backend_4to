@@ -19,7 +19,7 @@ export class ProductsService {
 
     @InjectRepository(Size)
     private readonly sizeRepository: Repository<Size>,
-    private readonly sizeService: SizeService, // Inyectar el servicio de Size
+    private readonly sizeService: SizeService, 
   ) {}
 
   async getAll(): Promise<Product[]> {
@@ -31,7 +31,7 @@ export class ProductsService {
     const where: FindOptionsWhere<Product> = {};
   
     if (params.category) {
-      where.category = ILike(`%${params.category}%`); // Comparación flexible
+      where.category = ILike(`%${params.category}%`); 
     }
   
     return this.productRepository.find({
@@ -53,16 +53,19 @@ export class ProductsService {
     const user = await this.userRepository.findOne({ where: { id: body.userId } });
     if (!user) throw new NotFoundException(`Usuario con ID ${body.userId} no encontrado`);
   
-    if (!Array.isArray(body.sizes)) {
-      throw new BadRequestException('sizes debe ser un array de objetos o strings');
+    let sizes = [];
+  
+    if (body.sizes !== undefined && body.sizes !== null) {
+      if (!Array.isArray(body.sizes)) {
+        throw new BadRequestException('sizes debe ser un array de objetos o strings');
+      }
+  
+      const formattedSizes = body.sizes.map((s: any) =>
+        typeof s === 'string' ? { size: s, type: 'HOMBRE' } : s
+      );
+  
+      sizes = await this.sizeService['resolveSizesWithCountry'](formattedSizes);
     }
-  
-    // Aseguramos que cada talla tenga al menos size y type
-    const formattedSizes = body.sizes.map((s: any) =>
-      typeof s === 'string' ? { size: s, type: 'HOMBRE' } : s
-    );
-  
-    const sizes = await this.sizeService['resolveSizesWithCountry'](formattedSizes);
   
     const product = this.productRepository.create({
       name: body.name,
@@ -71,7 +74,7 @@ export class ProductsService {
       stock: body.stock,
       category: body.category,
       user,
-      sizes,
+      sizes, 
     });
   
     await this.productRepository.save(product);
