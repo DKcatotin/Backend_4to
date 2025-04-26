@@ -13,6 +13,12 @@ export class ProductsController {
     return this.productService.getAll();
   }
 
+  @Get('avanzada')
+findAvanzada(@Query('category') category: string) {
+  return this.productService.findAvanzada({ category });
+}
+
+
   @Get(':id')
   find(@Param('id') id: number) {
     return this.productService.getId(id);
@@ -26,11 +32,8 @@ export class ProductsController {
     this.productService.insert(body);
   }
   @Put(':id')
-  update(
-    @Param('id') id: number, 
-    @Body() body:ProductDto,
-  ) {
-    return this.productService.update(id, body);
+  async update(@Param('id') id: number, @Body() productDto: ProductDto): Promise<void> {
+    await this.productService.update(id, productDto);
   }
 
   @Delete(':id')

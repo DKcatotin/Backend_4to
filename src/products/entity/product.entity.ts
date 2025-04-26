@@ -25,7 +25,7 @@ export class Product {
   @ManyToOne(() => User, user => user.products, { onDelete: 'CASCADE' })
   user: User;
 
-  @ManyToMany(() => Size, size => size.products, { cascade: true, eager: true }) // 👈 agrega eager: true
+  @ManyToMany(() => Size, size => size.products, { cascade: true, eager: true }) 
   @JoinTable()
   sizes: Size[];
 

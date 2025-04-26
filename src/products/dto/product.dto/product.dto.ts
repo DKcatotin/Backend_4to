@@ -20,7 +20,7 @@ export class ProductDto {
   description: string;
 
   @IsNumber({ maxDecimalPlaces: 2 }, { message: 'El precio debe ser un número válido' })
-  @IsPositive({ message: 'El precio debe ser mayor que cero' })
+  @IsPositive({ message: 'El campo precio debe ser requerido y debe ser mayor que cero' })
   precio: number;
 
   @IsNumber({}, { message: 'El stock debe ser un número' })
@@ -38,5 +38,5 @@ export class ProductDto {
 
   @IsOptional()
   @IsArray()
-  sizes?: number[];
+  sizes?: { size: string, type: string }[]
 }

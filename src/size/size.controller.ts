@@ -2,14 +2,20 @@ import { Controller, Get, Post, Body, Put, Patch, Param, Delete } from '@nestjs/
 import { SizeService } from './size.service';
 import { CreateSizeDto } from './dto/create-size.dto';
 import { UpdateSizeDto } from './dto/update-size.dto';
+import { SizeInputDto } from './dto/size-input.dto';
 
 @Controller('size')
 export class SizeController {
   constructor(private readonly sizeService: SizeService) {}
 
   @Post()
-  create(@Body() createSizeDto: CreateSizeDto) {
-    return this.sizeService.create(createSizeDto);
+  async create(@Body() sizeInputDto: SizeInputDto): Promise<void> {
+    await this.sizeService.resolveSizesWithCountry([sizeInputDto]);
+
+  }
+  @Post('resolve')
+  async resolveSize(@Body() input: SizeInputDto) {
+    return this.sizeService.resolveSizesWithCountry([input]);
   }
 
   @Get()
